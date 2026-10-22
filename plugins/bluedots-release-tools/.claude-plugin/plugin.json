@@ -1,0 +1,15 @@
+{
+  "name": "bluedots-release-tools",
+  "description": "Write Blue Dots release PR descriptions and release pages.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Blue Dots Economy"
+  },
+  "repository": "https://github.com/Blue-Dots-Economy/bluedots-claude-plugins",
+  "license": "MIT",
+  "keywords": [
+    "blue-dots",
+    "release-notes",
+    "pull-request"
+  ]
+}
