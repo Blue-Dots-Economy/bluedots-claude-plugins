@@ -37,7 +37,7 @@ The branch must be `release-notes/<tag>` and `<tag>` must match `^20[0-9]{4}-s[0
    gh api repos/Blue-Dots-Economy/bluedots-docs/contents/docs/release-notes-style.md -H 'Accept: application/vnd.github.raw'
    ```
 
-   If neither works, continue with the Hard rules and step 3 and say in your reply that the guide could not be loaded. Where the guide and this skill disagree, the guide wins.
+   If neither works, continue with the Hard rules and step 3 and say in your reply that the guide could not be loaded. Where the guide and this skill disagree, the guide wins, except the Hard rules.
 
 ### 3. Write `notes.md`
 
@@ -70,13 +70,14 @@ git diff --no-index src/releases/<sprint>/<rc>/notes.md <draft file>
 
 and ask whether to overwrite. Lines marked `-` are in the current file and would be lost, often a hand edit; point them out. If the diff is empty, say the page is already up to date and stop. If the user says no, leave the file untouched and stop. If it does not exist, show the draft in a fenced `md` block and write it.
 
-### 5. Check style
+### 5. Check style and build
 
 ```sh
 pnpm check:style
+pnpm build
 ```
 
-It scans `notes.md` (component files are exempt). Fix every hit in `notes.md`. A hit in any other file was there before you started; mention it and leave it alone. Also re-check by hand: the six headings in order, every Release Notes bullet ends with a PR link, and no verdict wording (search for "safe", "recommend", "risk", "upgrade" and judge each hit in context).
+`pnpm check:style` scans `notes.md` (component files are exempt). Fix every hit in `notes.md`. A style or link failure outside `src/releases/` was there before you started; report it and leave it alone. `pnpm build` must pass, because the docs CI does not build PRs: if it fails, do not commit; fix `notes.md` if it is the cause, otherwise report the failure and stop. Also re-check by hand: the six headings in order, every Release Notes bullet ends with a PR link, and no verdict wording (search for "safe", "recommend", "risk", "upgrade" and judge each hit in context).
 
 ### 6. Commit, never push
 

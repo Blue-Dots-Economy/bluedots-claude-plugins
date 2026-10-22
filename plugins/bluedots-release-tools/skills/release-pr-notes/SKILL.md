@@ -25,7 +25,7 @@ The style guide is the source of truth. Fetch it:
 gh api repos/Blue-Dots-Economy/bluedots-docs/contents/docs/release-notes-style.md -H 'Accept: application/vnd.github.raw'
 ```
 
-If that fails (404, offline, no `gh` auth), read `docs/release-notes-style.md` from a local `bluedots-docs` checkout if the user has one (look for a sibling `bluedots-docs/` directory next to the current repo, or ask once). If neither is available, continue with the Hard rules above and step 6 and say in your reply that the guide could not be loaded. Where the guide and this skill disagree, the guide wins.
+If that fails (404, offline, no `gh` auth), read `docs/release-notes-style.md` from a local `bluedots-docs` checkout if the user has one (look for a sibling `bluedots-docs/` directory next to the current repo, or ask once). If neither is available, continue with the Hard rules above and step 6 and say in your reply that the guide could not be loaded. Where the guide and this skill disagree, the guide wins, except the Hard rules.
 
 ### 2. Read the repo's PR template
 
