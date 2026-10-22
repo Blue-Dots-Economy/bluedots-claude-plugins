@@ -25,7 +25,7 @@ The style guide is the source of truth. Fetch it:
 gh api repos/Blue-Dots-Economy/bluedots-docs/contents/docs/release-notes-style.md -H 'Accept: application/vnd.github.raw'
 ```
 
-If that fails (404, offline, no `gh` auth), read `docs/release-notes-style.md` from a local `bluedots-docs` checkout if the user has one (look for a sibling `bluedots-docs/` directory next to the current repo, or ask once). If neither is available, continue with the condensed rules in step 6 and say in your reply that the guide could not be loaded. Where the guide and this skill disagree, the guide wins.
+If that fails (404, offline, no `gh` auth), read `docs/release-notes-style.md` from a local `bluedots-docs` checkout if the user has one (look for a sibling `bluedots-docs/` directory next to the current repo, or ask once). If neither is available, continue with the Hard rules above and step 6 and say in your reply that the guide could not be loaded. Where the guide and this skill disagree, the guide wins.
 
 ### 2. Read the repo's PR template
 
@@ -39,8 +39,10 @@ Take the range from the user if given. Otherwise infer it:
 |---|---|---|---|
 | feature → develop | `develop` | `feature` | `origin/develop..origin/feature` |
 | develop → main | `main` | `develop` | `origin/main..origin/develop` |
-| hotfix → main | `main` | hotfix branch | `origin/main..<hotfix branch>` |
+| hotfix → main | `main` | hotfix branch | `origin/main..origin/<hotfix branch>` |
 | "as of tag `<T>`" | previous sprint tag | `<T>` | `<previous tag>..<T>` |
+
+When the user gives both a PR kind and a tag (for example "develop → main as of `202609-s1-rc2`"), the tag bounds the range (`<previous tag>..<T>`) and the PR kind only decides the base of the PR you will open or edit.
 
 - Sprint tags match `^20[0-9]{4}-s[0-9]+-rc[0-9]+$` and are cut from `main`. The previous tag is the highest sprint tag below `<T>` in that order (sprint, then rc). Ignore suffixed tags (`-alimco`, `-hotfix`, `-up-dhwd` and so on): never use one as the previous tag.
 - Run `git fetch origin --tags` first in a local checkout. Without a checkout, use `gh api repos/<owner>/<repo>/compare/<base>...<head>`.
@@ -50,14 +52,21 @@ Take the range from the user if given. Otherwise infer it:
 1. List the commits: `git log --format='%h %s' <base>..<head>` and `git log --merges --format='%h %s' <base>..<head>`.
    - Squash merges end their subject with `(#N)`; merge commits read `Merge pull request #N from ...`. A subject can also carry an issue number, such as `fix: ... (#685) (#686)`; check each number with `gh pr view <N>` and link only pull requests.
    - **Drop** promotion PRs (head branch `feature` or `develop`, such as an earlier feature → develop PR) and sync-down merges (`merge: sync main into develop` and similar). Their content is already in the underlying PRs or was released before. Say in the Summary what you left out and why, for example a direct-to-main fix that was already released.
-2. Get the details of the PRs merged into the head-of-range branch:
+2. Get the details of the PRs. Which branches to list depends on the range:
+
+   | Range | List merged PRs with |
+   |---|---|
+   | feature → develop | `--base feature` |
+   | develop → main | `--base feature` and `--base develop` |
+   | tag-bounded (`<previous tag>..<T>`) | `--base feature`, `--base develop` and `--base main` |
+   | hotfix → main | none: `gh pr view <hotfix PR number>`, plus any PR numbers from step 1 via `gh pr view` |
 
    ```sh
-   gh pr list --base <head-of-range branch> --state merged --limit 200 \
+   gh pr list --base <branch> --state merged --limit 200 \
      --json number,title,body,labels,files,mergedAt,headRefName
    ```
 
-   Keep only the PR numbers found in step 1. For develop → main, the work PRs were merged into `feature`, so run the same list with `--base feature` too. Fetch anything still missing directly: `gh pr view <N> --json number,title,body,labels,files`.
+   Keep only the PR numbers found in step 1, so a PR merged into one of those branches before or after the range is never listed. For a tag-bounded range without a local checkout, take step 1's commit list from `gh api --paginate repos/<owner>/<repo>/compare/<previous tag>...<T> --jq '.commits[].commit.message'`. Promotion PRs into `main` are still dropped as in step 1; a fix merged straight into `main` inside the range is kept. Fetch anything still missing directly: `gh pr view <N> --json number,title,body,labels,files`.
 3. Read every PR body in full. The `## Release Notes`, `## In Plain Terms`, deploy notes, "must ship first", "depends on", migration and realm notes are where the facts are. A PR labelled `no-release-notes` goes only into a Housekeeping bullet.
 
 ### 5. Scan the diff for config signals
@@ -103,7 +112,7 @@ Before showing it, confirm:
 
 - all eight headings are present, verbatim and in order;
 - every bullet under `## Release Notes` (bold theme labels aside) ends with a PR link;
-- no verdict wording anywhere (search for "safe", "recommend", "risk", "should upgrade", "must upgrade");
+- no verdict wording anywhere (search for "safe", "recommend", "risk", "should upgrade", "must upgrade", then judge each hit in context: "keeps your sign-in more safely" describes a change, "safe to upgrade" is a verdict);
 - no security mechanism detail (header or cookie names, algorithms, attack names);
 - every config-scan hit from step 5 is listed under `## Breaking changes / config` or deliberately left out because it needs no action.
 
