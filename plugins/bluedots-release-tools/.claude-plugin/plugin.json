@@ -1,7 +1,7 @@
 {
   "name": "bluedots-release-tools",
   "description": "Write Blue Dots release PR descriptions and release pages.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Blue Dots Economy"
   },

@@ -21,8 +21,8 @@ Write Blue Dots release PR descriptions and release pages.
 
 | Skill | What it does |
 |---|---|
-| `release-pr-notes` | Drafts the description of a release or promotion PR (feature → develop, develop → main, hotfix → main) in the house format, from the PRs and the diff in the range. Shows the draft before it creates or edits a PR. |
-| `release-page` | Drafts the release-wide notes page (`notes.md`) for a sprint release candidate in bluedots-docs, merged from the per-repo component files CI pushed to the `release-notes/<tag>` branch. Commits it locally, never pushes. |
+| `release-pr-notes` | Drafts the description of a release or promotion PR (feature → develop, UAT fix into develop, develop → main, hotfix into `release/<sprint>`, plus a short body for the automated `sync: release/<sprint>` PRs) in the house format, from the PRs and the diff in the range. Shows the draft before it creates or edits a PR. |
+| `release-page` | Drafts the release-wide notes page (`notes.md`) for a sprint candidate (`rcN`), release or hotfix (`hotfixN`) in bluedots-docs, merged from the per-repo component files CI pushed to the `release-notes/<tag>` branch. Commits it locally, never pushes. |
 
 Both skills follow the release notes style guide in [bluedots-docs](https://github.com/Blue-Dots-Economy/bluedots-docs/blob/main/docs/release-notes-style.md) and use the GitHub CLI (`gh`), signed in.
 

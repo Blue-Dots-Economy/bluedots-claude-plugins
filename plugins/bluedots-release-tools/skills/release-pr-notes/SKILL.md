@@ -1,6 +1,6 @@
 ---
 name: release-pr-notes
-description: Write the description for a Blue Dots release or promotion pull request in the house format (Summary, Release Notes, In Plain Terms, Breaking changes / config, What users will notice, Deploy ordering, Verification, Checklist). Use when opening or updating a promotion PR (feature → develop, develop → main), a hotfix PR into main, or when asked to "write release notes" or "write the release PR description" for a Blue Dots repo, including "as of tag <sprint tag>".
+description: Write the description for a Blue Dots release or promotion pull request in the house format (Summary, Release Notes, In Plain Terms, Breaking changes / config, What users will notice, Deploy ordering, Verification, Checklist). Use when opening or updating a promotion PR (feature → develop, develop → main), a UAT fix into develop, a hotfix PR into release/<sprint>, an automated `sync: release/<sprint>` PR, or when asked to "write release notes" or "write the release PR description" for a Blue Dots repo, including "as of tag <sprint tag>".
 ---
 
 # Release PR notes
@@ -37,36 +37,42 @@ Take the range from the user if given. Otherwise infer it:
 
 | PR kind | base | head | range |
 |---|---|---|---|
-| feature → develop | `develop` | `feature` | `origin/develop..origin/feature` |
-| develop → main | `main` | `develop` | `origin/main..origin/develop` |
-| hotfix → main | `main` | hotfix branch | `origin/main..origin/<hotfix branch>` |
-| "as of tag `<T>`" | previous sprint tag | `<T>` | `<previous tag>..<T>` |
+| feature → develop (sprint close) | `develop` | `feature` | `origin/develop..origin/feature` |
+| UAT fix into `develop` | `develop` | fix branch | `origin/develop..origin/<fix branch>` |
+| develop → main (release) | `main` | `develop` | `origin/main..origin/develop` |
+| hotfix into `release/<sprint>` | `release/<sprint>` | hotfix branch | `origin/release/<sprint>..origin/<hotfix branch>` |
+| `sync: release/<sprint> → develop` or `→ feature` | `develop` or `feature` | `release/<sprint>` | none: short body only (see step 6) |
+| "as of tag `<T>`" | previous tag | `<T>` | `<previous tag>..<T>` |
 
 When the user gives both a PR kind and a tag (for example "develop → main as of `202609-s1-rc2`"), the tag bounds the range (`<previous tag>..<T>`) and the PR kind only decides the base of the PR you will open or edit.
 
-- Sprint tags match `^20[0-9]{4}-s[0-9]+-rc[0-9]+$` and are cut from `main`. The previous tag is the highest sprint tag below `<T>` in that order (sprint, then rc). Ignore suffixed tags (`-alimco`, `-hotfix`, `-up-dhwd` and so on): never use one as the previous tag.
+- There are three sprint tag kinds. A candidate `YYYYMM-sN-rcN` (`^20[0-9]{4}-s[0-9]+-rc[0-9]+$`) is cut from `develop`. A release `YYYYMM-sN` (`^20[0-9]{4}-s[0-9]+$`) is cut from `main`, which also creates the branch `release/YYYYMM-sN`. A hotfix `YYYYMM-sN.N` (`^20[0-9]{4}-s[0-9]+\.[0-9]+$`) is cut from `release/YYYYMM-sN`. Order by sprint, then kind (candidate, release, hotfix), then number, so `rc10` comes after `rc9`.
+- The previous tag for a candidate is the highest earlier candidate or release tag (any sprint); for a release, the highest earlier release tag; for a hotfix, the highest earlier release or hotfix tag of the same sprint. Ignore suffixed tags (`-alimco`, `-hotfix`, `-up-dhwd` and so on): never use one as the previous tag.
 - Run `git fetch origin --tags` first in a local checkout. Without a checkout, use `gh api repos/<owner>/<repo>/compare/<base>...<head>`.
 
 ### 4. Collect the PRs in the range
 
 1. List the commits: `git log --format='%h %s' <base>..<head>` and `git log --merges --format='%h %s' <base>..<head>`.
    - Squash merges end their subject with `(#N)`; merge commits read `Merge pull request #N from ...`. A subject can also carry an issue number, such as `fix: ... (#685) (#686)`; check each number with `gh pr view <N>` and link only pull requests.
-   - **Drop** promotion PRs (head branch `feature` or `develop`, such as an earlier feature → develop PR) and sync-down merges (`merge: sync main into develop` and similar). Their content is already in the underlying PRs or was released before. Say in the Summary what you left out and why, for example a direct-to-main fix that was already released.
+   - **Drop** promotion PRs (head branch `feature`, `develop` or `release/<sprint>`, such as an earlier feature → develop PR) and sync-down merges (`merge: sync main into develop` and similar). Their content is already in the underlying PRs or was released before. Say in the Summary what you left out and why, for example a direct-to-main fix that was already released.
 2. Get the details of the PRs. Which branches to list depends on the range:
 
    | Range | List merged PRs with |
    |---|---|
    | feature → develop | `--base feature` |
    | develop → main | `--base feature` and `--base develop` |
-   | tag-bounded (`<previous tag>..<T>`) | `--base feature`, `--base develop` and `--base main` |
-   | hotfix → main | none: `gh pr view <hotfix PR number>`, plus any PR numbers from step 1 via `gh pr view` |
+   | UAT fix into develop | none: `gh pr view <PR number>`, plus any PR numbers from step 1 via `gh pr view` |
+   | tag-bounded candidate (`<previous tag>..<T>`) | `--base develop` |
+   | tag-bounded release | `--base main` |
+   | tag-bounded hotfix | `--base release/<sprint>` |
+   | hotfix into release/<sprint> | none: `gh pr view <hotfix PR number>`, plus any PR numbers from step 1 via `gh pr view` |
 
    ```sh
    gh pr list --base <branch> --state merged --limit 200 \
      --json number,title,body,labels,files,mergedAt,headRefName
    ```
 
-   Keep only the PR numbers found in step 1, so a PR merged into one of those branches before or after the range is never listed. For a tag-bounded range without a local checkout, take step 1's commit list from `gh api --paginate repos/<owner>/<repo>/compare/<previous tag>...<T> --jq '.commits[].commit.message'`. Promotion PRs into `main` are still dropped as in step 1; a fix merged straight into `main` inside the range is kept. Fetch anything still missing directly: `gh pr view <N> --json number,title,body,labels,files`.
+   Keep only the PR numbers found in step 1, so a PR merged into one of those branches before or after the range is never listed. For a tag-bounded range without a local checkout, take step 1's commit list from `gh api --paginate repos/<owner>/<repo>/compare/<previous tag>...<T> --jq '.commits[].commit.message'`. Promotion PRs (including `sync: release/<sprint>` PRs) are still dropped as in step 1; a fix merged straight into the tag's base branch inside the range is kept. Fetch anything still missing directly: `gh pr view <N> --json number,title,body,labels,files`.
 3. Read every PR body in full. The `## Release Notes`, `## In Plain Terms`, deploy notes, "must ship first", "depends on", migration and realm notes are where the facts are. A PR labelled `no-release-notes` goes only into a Housekeeping bullet.
 
 ### 5. Scan the diff for config signals
@@ -93,16 +99,18 @@ Template-only edits that need no action (for example placeholders in an example 
 
 ### 6. Write the body
 
-Use these headings, exactly, in this order. Follow `references/example-release-pr.md` (next to this file) for shape and level of detail.
+For a `sync: release/<sprint> → develop|feature` PR (opened automatically after a hotfix), skip the full notes. Write a short body: which hotfix PRs it carries back, linked, and the merge instruction (merge commit, not squash, so the fix keeps its history and the next promotion does not conflict). Do not add the eight headings.
 
-1. `## Summary`: for the reviewing engineer. What the promotion contains, the merge method if it matters (promotions into `develop` and `main` are merge commits, not squash), and what is left out. 2 to 4 sentences, never `None.`.
+For the other kinds, use these headings, exactly, in this order. Follow `references/example-release-pr.md` (next to this file) for shape and level of detail.
+
+1. `## Summary`: for the reviewing engineer. What the PR contains, the merge method if it matters (promotions into `develop` and `main` are merge commits, not squash; a UAT fix into `develop` follows the repo's usual method), and what is left out. 2 to 4 sentences, never `None.`.
 2. `## Release Notes`: one bullet per user- or operator-facing change, grouped under bold theme labels (`**Sign-in and sessions**`, `**Search and discovery**`, `**Security**`, `**Housekeeping**`), headline theme first. One or two sentences per bullet; rewrite PR titles, do not paste them. Fold refactors, dependency batches and CI fixes into one Housekeeping bullet. Every bullet ends with its PR link(s). Never `None.` when PRs merged.
 3. `## In Plain Terms`: for a PM or a non-technical reader. One paragraph, at most 4 sentences or about 80 words, headline change first. No PR numbers, env var names, jargon or hype words ("major", "exciting").
 4. `## Breaking changes / config`: for whoever deploys. One bullet per item from step 5: the name, what it does, the default, what to do, and the PR link.
 5. `## What users will notice`: for a trainer or PM. One short bullet per visible change, in the words users see; quote UI strings exactly as the PR shows them. No PR numbers or technical terms. `None.` and nothing else when nothing visible changed.
 6. `## Deploy ordering`: one bullet per order constraint, naming the repo and PR on both sides, with the reason in one clause. Look for these in PR bodies ("must ship first", "depends on", "merge order"). `None.` only when any order works.
 7. `## Verification`: green checks on the promoted HEAD (short SHA and check names), ancestry (`main` is contained in `develop`), manual checks. If nothing was verified, say what was not.
-8. `## Checklist`: the PR template's items, ticked, plus the merge instruction (`--merge`, not `--squash`, for promotions; do not delete the head branch) and the reminder to cut the shared release tag after all repos land.
+8. `## Checklist`: the PR template's items, ticked, plus the merge instruction (`--merge`, not `--squash`, for promotions; do not delete the head branch) and the reminder to cut the shared tag after all repos land: a candidate from `develop` after feature → develop or a UAT fix, the release from `main` after develop → main, a hotfix from `release/<sprint>` after a hotfix PR.
 
 Plain-language rules for sections 3, 4 and 5: short sentences, concrete nouns, active voice, expand an acronym on first use. Use `Blue Dots`, `a blue dot`, `domain` and `participant type`. Do not name internal files, branches or people in the five published sections (Release Notes, In Plain Terms, Breaking changes / config, What users will notice, Deploy ordering).
 
