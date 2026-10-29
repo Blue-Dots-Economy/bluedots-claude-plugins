@@ -1,0 +1,19 @@
+{
+  "name": "bluedots",
+  "owner": {
+    "name": "Blue Dots Economy"
+  },
+  "description": "Claude Code plugins for the Blue Dots Economy team.",
+  "plugins": [
+    {
+      "name": "bluedots-release-tools",
+      "source": "./plugins/bluedots-release-tools",
+      "description": "Write Blue Dots release PR descriptions and release pages."
+    },
+    {
+      "name": "bluedots-ticket-tools",
+      "source": "./plugins/bluedots-ticket-tools",
+      "description": "File Blue Dots tickets (Story, Task, Bug) with every board field and parent set."
+    }
+  ]
+}

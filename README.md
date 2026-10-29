@@ -1,0 +1,42 @@
+# Blue Dots Claude Code plugins
+
+Claude Code plugins for the Blue Dots Economy team.
+
+## Install
+
+In Claude Code:
+
+```
+/plugin marketplace add Blue-Dots-Economy/bluedots-claude-plugins
+/plugin install bluedots-release-tools@bluedots
+/plugin install bluedots-ticket-tools@bluedots
+```
+
+To try a local checkout instead, run `/plugin marketplace add <path to this repo>`.
+
+## Plugins
+
+### bluedots-release-tools
+
+Write Blue Dots release PR descriptions and release pages.
+
+| Skill | What it does |
+|---|---|
+| `release-pr-notes` | Drafts the description of a release or promotion PR (feature → develop, UAT fix into develop, develop → main, hotfix into `release/<sprint>`, plus a short body for the automated `sync: release/<sprint>` PRs) in the house format, from the PRs and the diff in the range. Shows the draft before it creates or edits a PR. |
+| `release-page` | Drafts the release-wide notes page (`notes.md`) for a sprint candidate (`rcN`), release or hotfix (`hotfixN`) in bluedots-docs, merged from the per-repo component files CI pushed to the `release-notes/<tag>` branch. Commits it locally, never pushes. |
+
+Both skills follow the release notes style guide in [bluedots-docs](https://github.com/Blue-Dots-Economy/bluedots-docs/blob/main/docs/release-notes-style.md) and use the GitHub CLI (`gh`), signed in.
+
+### bluedots-ticket-tools
+
+File Blue Dots tickets on the delivery board.
+
+| Skill | What it does |
+|---|---|
+| `creating-bluedots-tickets` | Files a Story, Task or Bug in any Blue Dots repo. Collects the required details before drafting, then sets the epic label, issue type, parent (a Story for Tasks and Bugs) and the Project #1 fields: Epic, Category, Work Type, Sprint, Sprint Entry, and Story Points or Estimate. Dry-runs before it creates anything. |
+
+It uses the GitHub CLI (`gh`), signed in with access to the org's Project #1, plus `jq`.
+
+## License
+
+MIT. See [LICENSE](LICENSE).

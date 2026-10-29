@@ -1,0 +1,15 @@
+{
+  "name": "bluedots-ticket-tools",
+  "description": "File Blue Dots tickets (Story, Task, Bug) with every board field and parent set.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Blue Dots Economy"
+  },
+  "repository": "https://github.com/Blue-Dots-Economy/bluedots-claude-plugins",
+  "license": "MIT",
+  "keywords": [
+    "blue-dots",
+    "github-issues",
+    "project-board"
+  ]
+}
