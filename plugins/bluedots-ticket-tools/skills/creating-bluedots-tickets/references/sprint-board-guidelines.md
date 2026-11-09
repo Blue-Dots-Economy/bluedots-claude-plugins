@@ -18,9 +18,8 @@ Filing tickets with Claude Code: install the **bluedots-ticket-tools** plugin, w
    - A Story should take about 2–3 days.
    - **Need an Epic? Talk to the program lead.**
 3. **Parent:**
-   - **A Story's parent is an Epic.** Pick it from [bluedots-program](https://github.com/Blue-Dots-Economy/bluedots-program/issues), or use the sprint's "Implementation Epic for <sprint>" in bluedots-infra-deployments for deployment and support Stories.
-   - **A Task or Bug's parent is a Story.** Pick it from [this view](https://github.com/orgs/Blue-Dots-Economy/projects/1/views/26). If no Story fits, create the Story first.
-   - If nothing fits, **talk to the program lead**.
+   - **A Story's parent is an Epic.** Pick it from [bluedots-program](https://github.com/Blue-Dots-Economy/bluedots-program/issues) or from [the current sprint's Epics](https://github.com/orgs/Blue-Dots-Economy/projects/1/views/26). Epics created in the code repos (such as the sprint's "Implementation Epic for <sprint>") are added to the sprint and kept up to date. If nothing fits, talk to the program lead.
+   - **A Task or Bug's parent is a Story.** Pick it from [the current sprint's Stories](https://github.com/orgs/Blue-Dots-Economy/projects/1/views/12). If no Story fits, create the Story first.
 4. **Sizing:**
    - **Only Stories carry Story Points.** Tasks and Bugs carry **Estimate (d)** in dev days.
    - A Story's points cover its Tasks and Bugs. Don't add their estimates on top.

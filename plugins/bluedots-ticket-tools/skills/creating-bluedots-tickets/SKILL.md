@@ -13,12 +13,14 @@ Team rules: `references/sprint-board-guidelines.md` in this skill (the same guid
 
 | Type | Size | Parent | Sizing field |
 |---|---|---|---|
-| **Story** | about 2–3 days | an epic (or sub-epic) in bluedots-program, or the sprint's "Implementation Epic for <sprint>" in bluedots-infra-deployments for deployment and support Stories | **Story Points**: 1, 2, 3, 5, 8, 13 (table below) |
+| **Story** | about 2–3 days | an epic (or sub-epic) in bluedots-program, or one of the current sprint's Epics (including Epics in code repos such as the "Implementation Epic for <sprint>") | **Story Points**: 1, 2, 3, 5, 8, 13 (table below) |
 | **Task** | a piece of a Story | **a Story** (any repo), never an epic | **Estimate (d)** in dev days |
 | **Bug** | a defect fix | **a Story** (any repo), never an epic | **Estimate (d)** in dev days |
 
 - Only these three types. **A new Epic or sub-epic needs the program lead's approval** (see the end of this file).
-- **Choosing a parent:** first [Project #1 view 26](https://github.com/orgs/Blue-Dots-Economy/projects/1/views/26); if nothing fits, the bluedots-program issues; if nothing fits there either, ask the program lead. A Task or Bug with no fitting Story gets a new Story created first.
+- **Choosing a parent:**
+  - **Story:** an Epic from the bluedots-program issues or from [the current sprint's Epics](https://github.com/orgs/Blue-Dots-Economy/projects/1/views/26); if nothing fits, ask the program lead.
+  - **Task or Bug:** a Story from [the current sprint's Stories](https://github.com/orgs/Blue-Dots-Economy/projects/1/views/12). A Task or Bug with no fitting Story gets a new Story created first.
 - One parent only (GitHub allows one).
 
 ## Story Points
