@@ -14,6 +14,14 @@
       "name": "bluedots-ticket-tools",
       "source": "./plugins/bluedots-ticket-tools",
       "description": "File Blue Dots tickets (Story, Task, Bug) with every board field and parent set."
+    },
+    {
+      "name": "bluedots-schema-tools",
+      "source": {
+        "source": "github",
+        "repo": "AbhiGaddi/bluedots-claude-plugins"
+      },
+      "description": "Turn a Blue Dots schema workbook (Excel) into network.json and the aggregator registration form schemas."
     }
   ]
 }

@@ -7,19 +7,28 @@ description: Use when creating, filing, raising or opening any GitHub issue in t
 
 Epics live in `Blue-Dots-Economy/bluedots-program` (private, **zero commits — issues only**). Tickets live in the repo whose code changes. Everything lands on org **Project #1 "Blue Dots — Delivery"**, which is the single source of truth: fill every field when the ticket is created.
 
-This skill restates the team's sprint-board guidelines. Taxonomy: `program-ops/02-epic-taxonomy.md` in bluedots-program.
+Team rules: `references/sprint-board-guidelines.md` in this skill (the same guide is shared with the team for reading). Where this file and the guide differ, the guide wins. Taxonomy: `program-ops/02-epic-taxonomy.md` in bluedots-program.
 
 ## Ticket types and parents
 
 | Type | Size | Parent | Sizing field |
 |---|---|---|---|
-| **Story** | about 2–3 days | an epic (or sub-epic) in bluedots-program | **Story Points**: 1, 2, 3, 5, 8, 13 |
+| **Story** | about 2–3 days | an epic (or sub-epic) in bluedots-program, or the sprint's "Implementation Epic for <sprint>" in bluedots-infra-deployments for deployment and support Stories | **Story Points**: 1, 2, 3, 5, 8, 13 (table below) |
 | **Task** | a piece of a Story | **a Story** (any repo), never an epic | **Estimate (d)** in dev days |
 | **Bug** | a defect fix | **a Story** (any repo), never an epic | **Estimate (d)** in dev days |
 
 - Only these three types. **A new Epic or sub-epic needs the program lead's approval** (see the end of this file).
 - **Choosing a parent:** first [Project #1 view 26](https://github.com/orgs/Blue-Dots-Economy/projects/1/views/26); if nothing fits, the bluedots-program issues; if nothing fits there either, ask the program lead. A Task or Bug with no fitting Story gets a new Story created first.
 - One parent only (GitHub allows one).
+
+## Story Points
+
+| Dev days | ≤ 0.5 | 1 | 1.5–2 | 3 | 4–5 | 6–10 |
+|---|---|---|---|---|---|---|
+| **Story Points** | 1 | 2 | 3 | 5 | 8 | 13 |
+
+- More than 10 days is too big for one Story: split it.
+- A Story's points cover its Tasks and Bugs; their estimates are not added on top. Points are a range: they only need to be close to the children's estimates.
 
 ## The gate: collect required details BEFORE drafting
 
@@ -69,7 +78,15 @@ This skill restates the team's sprint-board guidelines. Taxonomy: `program-ops/0
 For requests that keep arriving through a sprint (each client deployment, production):
 1. **At planning:** one Story per deployment per sprint, e.g. "<deployment> support 202610-s1", **no Story Points**.
 2. **During the sprint:** each request is its own Task under that Story, Work Type Chore, **estimate only**.
-3. **At sprint close:** add up the Tasks' dev days and set the Story's points: ≤0.5 → 1, ≤1 → 2, ≤1.5 → 3, ≤2.5 → 5, ≤4 → 8, >4 → 13.
+3. **At sprint close:** add up the Tasks' dev days and set the Story's points from the Story Points table.
+
+## Sprint close and sprint review
+
+Follow the **Sprint close** and **Reviewing a sprint** sections of `references/sprint-board-guidelines.md`. The essentials:
+- **Never change the Sprint of a ticket worked in a closed sprint.** It stays in that sprint for history and reports.
+- **Unfinished work continues on a new ticket** in the next sprint: same parent, Sprint Entry Carried-forward, Carry Count = old + 1, Slip Reason, link to the old ticket. A partly done ticket is re-sized to what was done and closed as completed; a not-started one is closed as not planned with a link. A not-started ticket going back to the backlog stays open with Sprint cleared.
+- **Tasks and Bugs follow the sprint they were done in:** done ones stay under a Story in that sprint; open ones move to a Story in the next sprint or to the backlog.
+- **When reviewing,** leave out tickets closed as not planned or duplicate and the bluedots-program Epics; Epics in code repos are fine.
 
 ## Filing
 

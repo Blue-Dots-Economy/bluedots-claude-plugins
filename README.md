@@ -10,7 +10,10 @@ In Claude Code:
 /plugin marketplace add Blue-Dots-Economy/bluedots-claude-plugins
 /plugin install bluedots-release-tools@bluedots
 /plugin install bluedots-ticket-tools@bluedots
+/plugin install bluedots-schema-tools@bluedots
 ```
+
+To pick up new versions later, run `/plugin marketplace update bluedots`.
 
 To try a local checkout instead, run `/plugin marketplace add <path to this repo>`.
 
@@ -35,7 +38,13 @@ File Blue Dots tickets on the delivery board.
 |---|---|
 | `creating-bluedots-tickets` | Files a Story, Task or Bug in any Blue Dots repo. Collects the required details before drafting, then sets the epic label, issue type, parent (a Story for Tasks and Bugs) and the Project #1 fields: Epic, Category, Work Type, Sprint, Sprint Entry, and Story Points or Estimate. Dry-runs before it creates anything. |
 
+The team's sprint-board rules ship with it in `references/sprint-board-guidelines.md`: Story Points table, parents, Work Type, sprint close and sprint review.
+
 It uses the GitHub CLI (`gh`), signed in with access to the org's Project #1, plus `jq`.
+
+### bluedots-schema-tools
+
+Turn a Blue Dots schema workbook (Excel) into `network.json` and the aggregator registration form schemas. Listed here from its own repo, [AbhiGaddi/bluedots-claude-plugins](https://github.com/AbhiGaddi/bluedots-claude-plugins), so the team needs only this marketplace.
 
 ## License
 
