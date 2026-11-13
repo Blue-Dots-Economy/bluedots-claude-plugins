@@ -29,6 +29,17 @@ Filing tickets with Claude Code: install the **bluedots-ticket-tools** plugin, w
    - No personal data.
 6. **Also set:** assignee, Epic, Category, Sprint, Work Type and Sprint Entry.
 
+## Assignees and credit
+
+- **The Story's assignee owns the Story.** They are answerable for it finishing. They don't get all of its points if others did part of the work.
+- **Each Task and Bug has one assignee: the person who does it.** If two people work on it, split it into two Tasks, each with its own estimate.
+- **A Story that more than one person works on must have a Task for each person's part.** Without Tasks, the Story's points can't be split.
+- **How credit is counted:**
+  - A person's points for a Story = the Story's points × their Task days ÷ all Task days under the Story.
+  - A Story with no Tasks credits its assignee. If it has more than one assignee, the points are split evenly.
+  - Each person's Task days done in the sprint are reported next to their points.
+- Reviews and pairing are not counted unless they have their own Task.
+
 ## Story Points
 
 | Dev days | ≤ 0.5 | 1 | 1.5–2 | 3 | 4–5 | 6–10 |
@@ -108,7 +119,12 @@ When checking a sprint for gaps:
   - every Story has points and no estimate;
   - every Task and Bug has an estimate and no points;
   - Epics have neither points nor an estimate;
-  - Bugs have Work Type Bug, and Sprint, Sprint Entry, Work Type, Epic, Category and assignee are set.
+  - Bugs have Work Type Bug, and Sprint, Sprint Entry, Work Type, Epic, Category and assignee are set;
+  - every Task and Bug has one assignee, and a Story with more than one assignee has Tasks.
+- **Scripts** (in this skill's `scripts/` folder; they need the GitHub CLI, signed in):
+  - `python3 fetch_board.py` saves every item on Project #1 to `board.json` in the current folder.
+  - `python3 sprint_checks.py <sprint>` lists the gaps above, by repo. Add `--active` while the sprint is running, to leave out "still open".
+  - `python3 dev_credit.py <sprint>` shows each person's points both ways (Story assignee, and share of Task days) and their Task days.
 
 ## Always
 

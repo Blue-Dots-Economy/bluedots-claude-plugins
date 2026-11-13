@@ -38,7 +38,9 @@ File Blue Dots tickets on the delivery board.
 |---|---|
 | `creating-bluedots-tickets` | Files a Story, Task or Bug in any Blue Dots repo. Collects the required details before drafting, then sets the epic label, issue type, parent (a Story for Tasks and Bugs) and the Project #1 fields: Epic, Category, Work Type, Sprint, Sprint Entry, and Story Points or Estimate. Dry-runs before it creates anything. |
 
-The team's sprint-board rules ship with it in `references/sprint-board-guidelines.md`: Story Points table, parents, Work Type, sprint close and sprint review.
+The team's sprint-board rules ship with it in `references/sprint-board-guidelines.md`: Story Points table, parents, Work Type, assignees and credit, sprint close and sprint review.
+
+Sprint review scripts ship in the skill's `scripts/` folder: `fetch_board.py` saves Project #1 to `board.json`, `sprint_checks.py` lists a sprint's gaps by repo, and `dev_credit.py` shows each person's points (by Story assignee and by share of Task days) and Task days.
 
 It uses the GitHub CLI (`gh`), signed in with access to the org's Project #1, plus `jq`.
 
