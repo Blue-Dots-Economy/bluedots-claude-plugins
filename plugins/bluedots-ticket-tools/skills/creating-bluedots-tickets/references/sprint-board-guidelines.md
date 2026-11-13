@@ -122,9 +122,9 @@ When checking a sprint for gaps:
   - Bugs have Work Type Bug, and Sprint, Sprint Entry, Work Type, Epic, Category and assignee are set;
   - every Task and Bug has one assignee, and a Story with more than one assignee has Tasks.
 - **Scripts** (in this skill's `scripts/` folder; they need the GitHub CLI, signed in):
-  - `python3 fetch_board.py board.json` saves every item on Project #1.
-  - `python3 sprint_checks.py board.json <sprint>` lists the gaps above, by repo. Add `--active` while the sprint is running, to leave out "still open".
-  - `python3 dev_credit.py board.json <sprint>` shows each person's points both ways (Story assignee, and share of Task days) and their Task days.
+  - `python3 fetch_board.py` saves every item on Project #1 to `board.json` in the current folder.
+  - `python3 sprint_checks.py <sprint>` lists the gaps above, by repo. Add `--active` while the sprint is running, to leave out "still open".
+  - `python3 dev_credit.py <sprint>` shows each person's points both ways (Story assignee, and share of Task days) and their Task days.
 
 ## Always
 

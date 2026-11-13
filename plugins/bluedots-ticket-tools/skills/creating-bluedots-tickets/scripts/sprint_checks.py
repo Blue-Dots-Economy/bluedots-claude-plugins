@@ -1,24 +1,18 @@
 """Sprint review checks for org Project #1, following references/sprint-board-guidelines.md.
-usage: python3 sprint_checks.py board.json <sprint> [--active]
-  board.json from fetch_board.py; --active leaves out "still open" while the sprint is running.
+usage: python3 sprint_checks.py <sprint> [--active]
+  reads board.json from fetch_board.py; --active leaves out "still open" while the sprint is running.
 Scope: items with Sprint == <sprint>, plus Stories that have a child in it.
 Leaves out tickets closed as not planned or duplicate, and the bluedots-program Epics."""
-import json, os, sys
+import json, sys
 
 
-def local_path(arg):
-    """The board file must sit in the current folder (or below it)."""
-    base = os.path.realpath(os.getcwd())
-    path = os.path.realpath(os.path.join(base, arg))
-    if not path.startswith(base + os.sep):
-        sys.exit(f"{arg}: use a file in the current folder")
-    return path
+BOARD = "board.json"  # written by fetch_board.py in the current folder
 
 EST, ENTRY = "Estimate (d)", "Sprint Entry"
 from collections import defaultdict
-with open(local_path(sys.argv[1])) as fh:
+with open(BOARD) as fh:
     items = json.load(fh)
-S = sys.argv[2]
+S = sys.argv[1]
 by = {}
 for i in items:
     c = i["content"]

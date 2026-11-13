@@ -1,15 +1,9 @@
 """Save every item on org Project #1 (issues with board fields) to a JSON file.
-usage: python3 fetch_board.py board.json   (needs the GitHub CLI, signed in)"""
-import json, os, subprocess, sys, time
+usage: python3 fetch_board.py   (writes board.json in the current folder; needs the GitHub CLI, signed in)"""
+import json, subprocess, sys, time
 
 
-def local_path(arg):
-    """The board file must sit in the current folder (or below it)."""
-    base = os.path.realpath(os.getcwd())
-    path = os.path.realpath(os.path.join(base, arg))
-    if not path.startswith(base + os.sep):
-        sys.exit(f"{arg}: use a file in the current folder")
-    return path
+BOARD = "board.json"  # written by fetch_board.py in the current folder
 
 Q = """query($after:String){organization(login:"Blue-Dots-Economy"){projectV2(number:1){
  items(first:25,after:$after){pageInfo{hasNextPage endCursor} nodes{id
@@ -38,6 +32,6 @@ while True:
     if not page["pageInfo"]["hasNextPage"]:
         break
     after = page["pageInfo"]["endCursor"]
-with open(local_path(sys.argv[1]), "w") as out:
+with open(BOARD, "w") as out:
     json.dump(items, out)
 print(f"{len(items)} items", file=sys.stderr)

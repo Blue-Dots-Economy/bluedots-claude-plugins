@@ -91,7 +91,7 @@ Follow the **Sprint close** and **Reviewing a sprint** sections of `references/s
 - **Unfinished work continues on a new ticket** in the next sprint: same parent, Sprint Entry Carried-forward, Carry Count = old + 1, Slip Reason, link to the old ticket. A partly done ticket is re-sized to what was done and closed as completed; a not-started one is closed as not planned with a link. A not-started ticket going back to the backlog stays open with Sprint cleared.
 - **Tasks and Bugs follow the sprint they were done in:** done ones stay under a Story in that sprint; open ones move to a Story in the next sprint or to the backlog.
 - **When reviewing,** leave out tickets closed as not planned or duplicate and the bluedots-program Epics; Epics in code repos are fine.
-- **Review scripts** in `scripts/`: `fetch_board.py board.json`, then `sprint_checks.py board.json <sprint> [--active]` for gaps and `dev_credit.py board.json <sprint>` for per-person points.
+- **Review scripts** in `scripts/`: `fetch_board.py` (writes `board.json`), then `sprint_checks.py <sprint> [--active]` for gaps and `dev_credit.py <sprint>` for per-person points.
 
 ## Filing
 

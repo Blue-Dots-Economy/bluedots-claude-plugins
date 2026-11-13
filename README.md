@@ -40,7 +40,7 @@ File Blue Dots tickets on the delivery board.
 
 The team's sprint-board rules ship with it in `references/sprint-board-guidelines.md`: Story Points table, parents, Work Type, assignees and credit, sprint close and sprint review.
 
-Sprint review scripts ship in the skill's `scripts/` folder: `fetch_board.py` saves Project #1, `sprint_checks.py` lists a sprint's gaps by repo, and `dev_credit.py` shows each person's points (by Story assignee and by share of Task days) and Task days.
+Sprint review scripts ship in the skill's `scripts/` folder: `fetch_board.py` saves Project #1 to `board.json`, `sprint_checks.py` lists a sprint's gaps by repo, and `dev_credit.py` shows each person's points (by Story assignee and by share of Task days) and Task days.
 
 It uses the GitHub CLI (`gh`), signed in with access to the org's Project #1, plus `jq`.
 

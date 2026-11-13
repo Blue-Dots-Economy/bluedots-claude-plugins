@@ -1,5 +1,5 @@
 """Per-person Story Points for a sprint on org Project #1, counted two ways.
-usage: python3 dev_credit.py board.json <sprint>     (board.json from fetch_board.py)
+usage: python3 dev_credit.py <sprint>     (reads board.json from fetch_board.py)
 
 A  Story assignee: each Story's points go to its assignees, split evenly.
 B  Task share: each Story's points are split by its Tasks' and Bugs' estimates, credited to
@@ -7,23 +7,17 @@ B  Task share: each Story's points are split by its Tasks' and Bugs' estimates, 
    A Story with no estimated Tasks falls back to A. A Task with no assignee counts for the Story's.
 Task days: estimates of Tasks and Bugs whose Sprint is <sprint>, per assignee.
 Leaves out tickets closed as not planned or duplicate. Stories counted: Sprint == <sprint>."""
-import json, os, sys
+import json, sys
 
 
-def local_path(arg):
-    """The board file must sit in the current folder (or below it)."""
-    base = os.path.realpath(os.getcwd())
-    path = os.path.realpath(os.path.join(base, arg))
-    if not path.startswith(base + os.sep):
-        sys.exit(f"{arg}: use a file in the current folder")
-    return path
+BOARD = "board.json"  # written by fetch_board.py in the current folder
 
 EST = "Estimate (d)"
 from collections import defaultdict
 
-with open(local_path(sys.argv[1])) as fh:
+with open(BOARD) as fh:
     items = json.load(fh)
-S = sys.argv[2]
+S = sys.argv[1]
 fv = lambda it: {x["field"]["name"]: x.get("name", x.get("number", x.get("text")))
                  for x in it["fieldValues"]["nodes"] if x and x.get("field")}
 skip = lambda c: c["state"] == "CLOSED" and c.get("stateReason") in ("NOT_PLANNED", "DUPLICATE")
