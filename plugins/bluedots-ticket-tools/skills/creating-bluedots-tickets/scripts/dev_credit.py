@@ -7,10 +7,23 @@ B  Task share: each Story's points are split by its Tasks' and Bugs' estimates, 
    A Story with no estimated Tasks falls back to A. A Task with no assignee counts for the Story's.
 Task days: estimates of Tasks and Bugs whose Sprint is <sprint>, per assignee.
 Leaves out tickets closed as not planned or duplicate. Stories counted: Sprint == <sprint>."""
-import json, sys
+import json, os, sys
+
+
+def local_path(arg):
+    """The board file must sit in the current folder (or below it)."""
+    base = os.path.realpath(os.getcwd())
+    path = os.path.realpath(os.path.join(base, arg))
+    if not path.startswith(base + os.sep):
+        sys.exit(f"{arg}: use a file in the current folder")
+    return path
+
+EST = "Estimate (d)"
 from collections import defaultdict
 
-items, S = json.load(open(sys.argv[1])), sys.argv[2]
+with open(local_path(sys.argv[1])) as fh:
+    items = json.load(fh)
+S = sys.argv[2]
 fv = lambda it: {x["field"]["name"]: x.get("name", x.get("number", x.get("text")))
                  for x in it["fieldValues"]["nodes"] if x and x.get("field")}
 skip = lambda c: c["state"] == "CLOSED" and c.get("stateReason") in ("NOT_PLANNED", "DUPLICATE")
@@ -31,7 +44,7 @@ A, B, days, untasked = defaultdict(float), defaultdict(float), defaultdict(float
 for c, f in stories:
     sp, owners = f.get("Story Points") or 0, who(c) or ["(no assignee)"]
     for a in owners: A[a] += sp / len(owners)
-    est = [(k, kf["Estimate (d)"]) for k, kf in kids[c["id"]] if (kf.get("Estimate (d)") or 0) > 0]
+    est = [(k, kf[EST]) for k, kf in kids[c["id"]] if (kf.get(EST) or 0) > 0]
     total = sum(d for _, d in est)
     if not total:
         for a in owners: B[a] += sp / len(owners)
@@ -42,7 +55,7 @@ for c, f in stories:
         for a in doers: B[a] += sp * d / total / len(doers)
 for c, f in tasks:
     doers = who(c) or ["(no assignee)"]
-    for a in doers: days[a] += (f.get("Estimate (d)") or 0) / len(doers)
+    for a in doers: days[a] += (f.get(EST) or 0) / len(doers)
 
 print(f"{S}: {len(stories)} Stories, {sum(A.values()):g} SP\n")
 print("| Person | A: Story assignee | B: Task share | Change | Task days |\n|---|---|---|---|---|")

@@ -3,9 +3,22 @@ usage: python3 sprint_checks.py board.json <sprint> [--active]
   board.json from fetch_board.py; --active leaves out "still open" while the sprint is running.
 Scope: items with Sprint == <sprint>, plus Stories that have a child in it.
 Leaves out tickets closed as not planned or duplicate, and the bluedots-program Epics."""
-import json, sys
+import json, os, sys
+
+
+def local_path(arg):
+    """The board file must sit in the current folder (or below it)."""
+    base = os.path.realpath(os.getcwd())
+    path = os.path.realpath(os.path.join(base, arg))
+    if not path.startswith(base + os.sep):
+        sys.exit(f"{arg}: use a file in the current folder")
+    return path
+
+EST, ENTRY = "Estimate (d)", "Sprint Entry"
 from collections import defaultdict
-items, S = json.load(open(sys.argv[1])), sys.argv[2]
+with open(local_path(sys.argv[1])) as fh:
+    items = json.load(fh)
+S = sys.argv[2]
 by = {}
 for i in items:
     c = i["content"]
@@ -30,7 +43,7 @@ def tier_of_sp(sp): return min(range(6), key=lambda i: abs(SCALE[i] - sp))
 rows = defaultdict(list)
 for cid in scope:
     c, v = by[cid]; t = typ(c); g = []; key = k(c)
-    sp, est = v.get("Story Points"), v.get("Estimate (d)")
+    sp, est = v.get("Story Points"), v.get(EST)
     p = c.get("parent"); pt = (p or {}).get("issueType", {}) and p["issueType"]["name"] if p else None
     # hierarchy
     if t == "Story":
@@ -41,7 +54,7 @@ for cid in scope:
         elif pt != "Story": g.append(f"parent is {pt or 'untyped'}, not Story")
     elif t != "Epic": g.append("no issue type")  # in-repo Epics are fine
     # sizing
-    days = sum(cv.get("Estimate (d)") or 0 for _, cv in kids[cid])
+    days = sum(cv.get(EST) or 0 for _, cv in kids[cid])
     if t == "Story":
         if sp is None: g.append("no SP" + (f" (tasks {days:g}d → {next(p for d,p in TIER if days<=d)})" if days else ""))
         elif sp not in SCALE: g.append(f"SP {sp:g} off the 1/2/3/5/8/13 scale")
@@ -57,15 +70,15 @@ for cid in scope:
     na = len(c["assignees"]["nodes"])
     if not na: g.append("no assignee")
     elif na > 1 and t in ("Task", "Bug"): g.append(f"{na} assignees (one per Task; split it)")
-    elif na > 1 and t == "Story" and not any((cv.get("Estimate (d)") or 0) > 0 for _, cv in kids[cid]):
+    elif na > 1 and t == "Story" and not any((cv.get(EST) or 0) > 0 for _, cv in kids[cid]):
         g.append(f"{na} assignees, no estimated Tasks (add a Task per person)")
-    for f in ("Epic", "Category", "Work Type", "Sprint Entry"):
-        if v.get(f) is None and not (f == "Sprint Entry" and v.get("Sprint") != S): g.append(f"no {f}")
+    for f in ("Epic", "Category", "Work Type", ENTRY):
+        if v.get(f) is None and not (f == ENTRY and v.get("Sprint") != S): g.append(f"no {f}")
     if t == "Bug" and v.get("Work Type") not in (None, "Bug"): g.append(f"Bug with Work Type {v.get('Work Type')}")
     if v.get("Sprint") != S: g.append(f"sprint {v.get('Sprint') or '—'} (child in {S})" if t == "Story" else f"sprint {v.get('Sprint') or '—'}")
     if c["state"] == "OPEN" and "--active" not in sys.argv: g.append(f"still open (status {v.get('Status')})" + (f", Carry Count {v['Carry Count']:g}" if v.get("Carry Count") else ""))
     elif c["state"] == "CLOSED" and v.get("Status") != "Done": g.append(f"closed but status {v.get('Status')}")
-    if v.get("Sprint Entry") == "Carried-forward" and not v.get("Slip Reason") and c["state"] == "OPEN": g.append("carried-forward, no Slip Reason")
+    if v.get(ENTRY) == "Carried-forward" and not v.get("Slip Reason") and c["state"] == "OPEN": g.append("carried-forward, no Slip Reason")
     if p and c["state"] == "OPEN" and p["id"] in by and by[p["id"]][0]["state"] == "CLOSED": g.append("open under closed parent")
     if t == "Task" and kids[cid]: g.append(f"Task has {len(kids[cid])} children (should be a Story)")
     if t == "Story" and c["state"] == "CLOSED" and any(cc["state"] == "OPEN" for cc, _ in kids[cid]): g.append("closed with open children")
