@@ -46,7 +46,15 @@ It uses the GitHub CLI (`gh`), signed in with access to the org's Project #1, pl
 
 ### bluedots-schema-tools
 
-Turn a Blue Dots schema workbook (Excel) into `network.json` and the aggregator registration form schemas. Listed here from its own repo, [AbhiGaddi/bluedots-claude-plugins](https://github.com/AbhiGaddi/bluedots-claude-plugins), so the team needs only this marketplace.
+Turn a Blue Dots schema workbook (Excel) into `network.json` and the aggregator registration form schemas.
+
+| Skill | What it does |
+|---|---|
+| `schema-from-sheet` | Reads the programme's schema workbook (profile sheets per domain, Aggregator Owner and Coordinator sheets, interaction rules, Domains) and builds `network.json`, the four aggregator registration form files, `aggregator.config.yaml` and, when the workbook lists deployments, `deployments.env`. Can also compare a workbook with an existing `network.json`. Every choice it makes is written to `decisions.md`. |
+
+The files are written by the skill's scripts from the workbook, the decisions file and the templates in `references/`, never by hand. Golden tests in `tests/` rebuild Purple Dots (ALIMCO) and Blue Dots and check every file matches: `python3 tests/run_golden.py`.
+
+It needs Python 3.9 or newer; the skill installs `openpyxl` if it is missing. Don't commit programme workbooks: they can hold real personal data in hidden sheets.
 
 ## License
 

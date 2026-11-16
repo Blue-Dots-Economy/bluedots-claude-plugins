@@ -1,0 +1,16 @@
+{
+  "name": "bluedots-schema-tools",
+  "description": "Turn a Blue Dots schema workbook (Excel) into network.json and the aggregator registration form schemas.",
+  "version": "0.3.3",
+  "author": {
+    "name": "Blue Dots Economy"
+  },
+  "repository": "https://github.com/Blue-Dots-Economy/bluedots-claude-plugins",
+  "license": "MIT",
+  "keywords": [
+    "blue-dots",
+    "schema",
+    "network.json",
+    "excel"
+  ]
+}

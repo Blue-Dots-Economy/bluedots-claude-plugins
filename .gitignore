@@ -1,1 +1,14 @@
 __pycache__/
+
+# Programme workbooks can hold real personal data (hidden sample sheets). Never commit them.
+*.xlsx
+*.xls
+*.xlsm
+*.csv
+
+# Schema skill output
+.spec.json
+schema-output/
+.venv/
+*.pyc
+.DS_Store
